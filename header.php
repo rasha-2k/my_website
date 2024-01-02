@@ -21,12 +21,12 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">My website</a>
+      <a class="navbar-brand" href="main_page.php">My website</a>
     </div>
     <ul class="nav navbar-nav">
         <li class="active"><a href="home.php">Home</a></li>
         <!-- <li><a href="#">Page 2</a></li> -->
-        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sitting<span class="caret"></span></a>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown">Sitting<span class="caret"></span></a>
         <ul class="dropdown-menu">
           <li><a href="edit.php">Edit Profile</a></li>
           <li><a href="logout.php">Log Out</a></li>

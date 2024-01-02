@@ -191,3 +191,149 @@ if (!isset($_SESSION["user"])) {
     </div>
 </body>
 </html>
+
+<script>
+  //! delete.php page
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="home_style.css">
+    <style> 
+    body {
+        /* display: flex; */
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+     .inputt {
+      padding: 15px;
+      margin: 5px 0 22px 0;
+      display: block;
+      width: 100%;
+      border: none;
+      background: #f1f1f1;
+      box-sizing: border-box;
+    }
+    .button:hover{
+        opacity:1;
+      }
+    .button {
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      width: 100%;
+      opacity: 0.8;
+    }
+    form {
+        border: 2px solid #ccc;
+        max-width: 500px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 15px;
+    }
+    </style>
+        <?php 
+    include 'header.php'
+    ?>
+    <title>Delete a user</title>
+</head>
+<body>
+
+    <form method = "post" action = "">
+		<p>
+            <label>Insert the username that you want to delete:<br>
+				<input name = "username" type = "text" class="inputt" placeholder="Enter the username here">
+			</label>
+        </p>
+		<p>
+			<input type = "submit" value = "Submit" class="button"  style="background-color: #4CAF50;">
+			<input type = "reset" value = "Clear" class="button" style="background-color: #f44336;">
+		</p>   
+		</form>
+</body>
+</html>
+
+
+<!-- //!--------------------------------------------------------------------
+ -->
+ <?php 
+  include 'header.php'
+  ?>
+   <?php $hostName = "localhost";
+  $dbUser = "root"; 
+  $dbpassword = "";
+  $dbName = "login_signup";
+  $conn = mysqli_connect($hostName, $dbUser, $dbpassword, $dbName);
+  if (!$conn) 
+  {
+    die("something went wrong". mysqli_connect_error());
+  }
+  if (isset($_POST["submit"])) 
+  {
+    $id = $_POST['id'];
+    $fullname = $_POST['fullname'];
+    $birthdate = $_POST['birthdate'];
+    $major = $_POST['major'];
+    $email = $_POST['email'];
+    $password = $_POST['psw'];
+    $psw_repeat = $_POST['psw_repeat'];
+    $password_hash = password_hash($password,PASSWORD_DEFAULT);
+    $errors = array();
+     
+    if (empty($fullname) ||empty($id)|| empty($major) || empty($email) || empty($password) || empty($psw_repeat)) 
+    {
+      array_push($errors,"All fields are required");
+      echo "<script>script('All fields are required')</script>";
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) 
+    {
+      array_push($errors, "Email is not valid");
+      echo "<script>script('Email is not valid')</script>";
+    }
+     if (strlen($password)<8) 
+     {
+      array_push($errors,"Password must be at least 8 charactes long");
+      echo "<script>script('Password must be at least 8 charactes long')</script>";
+     }
+    if ($password!==$psw_repeat) 
+    {
+      array_push($errors,"Password does not match");
+      echo "<script>script('Password does not match')</script>";
+    }
+    include_once "database_conn.php";
+    $sql = "SELECT * FROM users WHERE email = '$email'";
+    $result = mysqli_query($conn, $sql);
+    $rowCount = mysqli_num_rows($result);
+    if ($rowCount>0) 
+    {
+      array_push($errors,"Email already exists!");
+      echo "<script>script('Email already exists!')</script>";
+    }
+    if (count($errors)==0)
+    {
+      
+      $sql = "INSERT INTO users (ID,full_name,birthdate, major, email, password) VALUES ( ?, ?, ?, ?,?,? )";
+      $stmt = mysqli_stmt_init($conn);
+      $prepareStmt = mysqli_stmt_prepare($stmt,$sql);
+      if ($prepareStmt) 
+      {
+        mysqli_stmt_bind_param($stmt,"ssssss",$id, $fullname,$birthdate, $major, $email, $password_hash);
+        mysqli_stmt_execute($stmt);
+        echo "<script>alert('You are registered successfully.')</script>";
+      }
+      else
+      {
+          die("Something went wrong". mysqli_error($conn));
+      }
+    }
+  }
+   ?>

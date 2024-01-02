@@ -22,6 +22,7 @@ session_start();
       display: block;
       width: 100%;
       border: none;
+      border-radius: 4px;
       background: #f1f1f1;
       box-sizing: border-box;
     }
@@ -84,11 +85,12 @@ session_start();
     include 'header.php'
     ?>
 <?php
-        if (isset($_POST["submit"])) {
-           $username = $_POST["username"];
+        if (isset($_POST["submit"])) 
+        {
+           $identifier = $_POST["id"];
            $password = $_POST["psw"];
             require_once "database_conn.php";
-            $sql = "SELECT * FROM users WHERE user_name = '$username'";
+            $sql = "SELECT * FROM users WHERE id = ?";
             $result = mysqli_query($conn, $sql);
             $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
             if ($user) 
@@ -98,14 +100,15 @@ session_start();
                     $_SESSION["user"] = "yes";
                     header("Location: home.php");
                     die();
-                }else
+                }
+                else
                 {
                     echo "<script>alert('Password is incorrect')</script>";
                 }
             }
             else
             {
-                echo "<script>alert('Username does not exist')</script>";
+                echo "<script>alert('User does not exist')</script>";
             }
         }
        
@@ -115,23 +118,23 @@ session_start();
 ?>
 
 <div id="container">
-<form method="post" action="login.php" style="border: 2px solid #ccc">
+<form method="post" action="main_page.php" style="border: 2px solid #ccc">
     <div class="every-thing">
       <h1>Login</h1>
       <hr>
-      <label><b>User Name</b>
-      <input type="text" placeholder="Enter your User Name" name="username" class= "inputt" required></label>
+      <label>
+      <input type="text" placeholder="Enter your ID" name="id" class= "inputt" maxlength="9"></label>
 
-      <label ><b>Password</b>
-      <input type="password" placeholder="Enter Password" name="psw" class= "inputt" required></label>
-
+      <label >
+      <input type="password" placeholder="Enter Password" name="psw" class= "inputt" maxlength="50"></label>
+      <hr>
       <div class="clearfix">
         <input type="submit" id="loginbtn" class="button" name="submit" value="Log in">
         <input type="reset" id="canclebtn" class="button" name="clear" value="Cancle">
       </div>
-    </div>
-    <p>Don't have an account? <a href="signup.php" id="signup"><b> Register here</b></a></p>
-
+    <br><br>
+    <p>Don't have an account? <a href="signup.php" id="signup"><b> Sign up</b></a></p>
+  </div>
   </form>
   </div>
 </body>

@@ -8,25 +8,18 @@ session_start();
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-    /* body {
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-    } */
+  <style>
     .inputt {
-      
+
       padding: 15px;
       margin: 5px 500px 22px 0;
       display: block;
       width: 100%;
       border: none;
-      border-radius: 4px;
       background: #f1f1f1;
       box-sizing: border-box;
     }
-    
+
     hr {
       border: 1px solid #acacac;
       margin-bottom: 25px;
@@ -71,13 +64,7 @@ session_start();
       width: 100%;
       opacity: 0.8;
     }
-    label {
-        display: block;
-        margin-bottom: 15px;
-    }
-
-    </style>
-
+  </style>
 </head>
 
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
@@ -85,56 +72,58 @@ session_start();
     include 'header.php'
     ?>
 <?php
-        if (isset($_POST["submit"])) 
-        {
-           $identifier = $_POST["id"];
-           $password = $_POST["psw"];
-            require_once "database_conn.php";
-            $sql = "SELECT * FROM users WHERE id = ?";
-            $result = mysqli_query($conn, $sql);
-            $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
-            if ($user) 
-            {
-                if (password_verify($password, $user["password"])) {
-                    session_start();
-                    $_SESSION["user"] = "yes";
-                    header("Location: home.php");
-                    die();
-                }
-                else
-                {
-                    echo "<script>alert('Password is incorrect')</script>";
-                }
-            }
-            else
-            {
-                echo "<script>alert('User does not exist')</script>";
-            }
-        }
-       
+  include "database_conn.php";
+
+  if (isset($_POST["submit"])) 
+  {
+    $id = $_POST["id"];
+    $password =  $_POST["password"];
+    $sql = "SELECT * FROM users WHERE ID = '$id'";
+    $result = mysqli_query($conn, $sql);
+    $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    if ($user) 
+    {
+      if (password_verify($password, $user["password"])) 
+      {
+        session_start();
+        $_SESSION["user"] = "yes";
+        header("Location: home.php");
+        die();
+      }
+      else
+      {
+        echo "<script>alert('Password is incorrect')</script>";
+      }
+    }
+    else
+    {
+      echo "<script>alert('ID does not exist')</script>";
+    }
+  
+
   if (isset($_GET['logout']) && $_GET['logout'] == 'success') {
       echo '<script>alert("You have logged out successfully.");</script>';
   }
+ }
 ?>
 
 <div id="container">
-<form method="post" action="main_page.php" style="border: 2px solid #ccc">
+<form method="post" action="login.php" style="border: 2px solid #ccc">
     <div class="every-thing">
       <h1>Login</h1>
       <hr>
-      <label>
-      <input type="text" placeholder="Enter your ID" name="id" class= "inputt" maxlength="9"></label>
+      <input type="text" placeholder="Enter your ID" name="id" class= "inputt">
 
-      <label >
-      <input type="password" placeholder="Enter Password" name="psw" class= "inputt" maxlength="50"></label>
-      <hr>
+
+      <input type="password" placeholder="Enter Password" name="psw" class= "inputt">
+
       <div class="clearfix">
         <input type="submit" id="loginbtn" class="button" name="submit" value="Log in">
         <input type="reset" id="canclebtn" class="button" name="clear" value="Cancle">
       </div>
-    <br><br>
-    <p>Don't have an account? <a href="signup.php" id="signup"><b> Sign up</b></a></p>
-  </div>
+    </div>
+    <p>Don't have an account? <a href="signup.php" id="signup"><b> Register here</b></a></p>
+
   </form>
   </div>
 </body>

@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-
     form {
       border: 2px solid #ccc;
       max-width: 700px;
@@ -80,81 +80,111 @@
 </head>
 <body>
   <?php 
-  include 'header.php'
-  ?>
-<?php
-include_once "database_conn.php";
+    include 'header.php';
+    session_start();
+    include_once "database_conn.php";
 
-if (isset($_POST["submit"])) {
-    $id = $_POST['id'];
-    $fullname = $_POST['fullname'];
-    $birthdate = $_POST['birthdate'];
-    $major = $_POST['major'];
-    $email = $_POST['email'];
-    $password = $_POST['psw'];
-    $psw_repeat = $_POST['psw_repeat'];
-    $password_hash = password_hash($password, PASSWORD_DEFAULT);
-    $errors = array();
+    //to sure that the user press submit button
+    if (isset($_POST["submit"])) 
+    {
+      // store into the variables the user input
+        $id = $_POST['id']; //! the key of the array is the "name" of the input
+        $fullname = $_POST['fullname'];
+        $birthdate = $_POST['birthdate'];
+        $major = $_POST['major'];
+        $email = $_POST['email'];
+        $password = $_POST['psw'];
+        $psw_repeat = $_POST['psw_repeat'];
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $errors = array();
+        $check = "select * from users where email='{$email}'";
+        $res = mysqli_query($conn, $check);
+        
+        //to insure that the user input every field
+        if (empty($fullname) || empty($id) || empty($major) || empty($email) || empty($password) || empty($psw_repeat)) {
+            array_push($errors, "All fields are required");
+        }
+        
+        if (mysqli_num_rows($res) > 0)
+        {
+          echo "<script>alert('This email is used, Try another One Please!')</script>";
+        }
+        else
+        {
+          if ($password == $psw_repeat) 
+          {
 
-    // Validation and error handling code...
-
-    if (empty($fullname) || empty($id) || empty($major) || empty($email) || empty($password) || empty($psw_repeat)) {
-        array_push($errors, "All fields are required");
-    }
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        array_push($errors, "Email is not valid");
-    }
-
-    if (strlen($password) < 8) {
-        array_push($errors, "Password must be at least 8 characters long");
-    }
-
-    if ($password !== $psw_repeat) {
-        array_push($errors, "Password does not match");
-    }
-
-    $sql = "SELECT * FROM users WHERE email = '$email'";
-    $result = mysqli_query($conn, $sql);
-
-    if (mysqli_num_rows($result) > 0) {
-        array_push($errors, "Email already exists!");
-    }
-
-    if (count($errors) == 0) {
-        $sql = "INSERT INTO users (ID, full_name, birthdate, major, email, password) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt = mysqli_stmt_init($conn);
-
-        if (mysqli_stmt_prepare($stmt, $sql)) {
-            mysqli_stmt_bind_param($stmt, "ssssss", $id, $fullname, $birthdate, $major, $email, $password_hash);
-            $result = mysqli_stmt_execute($stmt);
-
-            if (!$result) {
-                // Check for duplicate entry error (error code 1062)
-                if (mysqli_errno($conn) == 1062) {
-                    echo "<script>alert('Email or ID already exists! Please choose a different Email or ID.')</script>";
-                } else {
-                    echo "Error: " . mysqli_error($conn);
-                }
-            } else {
+            $sql = "INSERT INTO users (ID, full_name, birthdate, major, email, password) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = mysqli_stmt_init($conn);
+            if (mysqli_stmt_prepare($stmt, $sql)) 
+            {
+              mysqli_stmt_bind_param($stmt, "ssssss", $id, $fullname, $birthdate, $major, $email, $password_hash);
+              if (mysqli_stmt_execute($stmt)) //! a function that sure that the sql can be executed
+              {
                 echo "<script>alert('You are registered successfully.')</script>";
-            }
+              }
+              else 
+              {
+                echo "<script>alert('Error executing statement: " . mysqli_stmt_error($stmt) . "')</script>";
+              }
+              mysqli_stmt_close($stmt);
+            }             
+          }
+          else
+          {
+            echo "<script>alert('Password does not match.')</script>";
+          }
 
-            mysqli_stmt_close($stmt);
-        } else {
-            die("Something went wrong: " . mysqli_error($conn));
-        }
-    } else {
-        // Display all errors
-        foreach ($errors as $error) {
-            echo "<script>alert('$error')</script>";
-        }
+    //     //! A function to filter every invalid characters
+    //     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    //         array_push($errors, "Email is not valid");
+    //     }
+
+    //     if (strlen($password) < 8) {
+    //         array_push($errors, "Password must be at least 8 characters long");
+    //     }
+
+    //     if ($password !== $psw_repeat) {
+    //         array_push($errors, "Password does not match");
+    //     }
+
+
+
+    //     if (count($errors) == 0) 
+    //     {
+    //       include "database_conn.php";
+    //       $sql = "INSERT INTO users (ID, full_name, birthdate, major, email, password) VALUES (?, ?, ?, ?, ?, ?)";
+    //       $stmt = mysqli_stmt_init($conn);
+
+    //       if (mysqli_stmt_prepare($stmt, $sql)) 
+    //       {
+    //         mysqli_stmt_bind_param($stmt, "ssssss", $id, $fullname, $birthdate, $major, $email, $password_hash);
+    //         if (mysqli_stmt_execute($stmt)) //! a function that sure that the sql can be executed
+    //         {
+    //           echo "<script>alert('You are registered successfully.')</script>";
+    //         }
+    //         mysqli_stmt_close($stmt);
+    //       } 
+    //       else
+    //       {
+    //         echo"Something went wrong: " . mysqli_error($conn);
+    //       }
+    //       if ($mysqli->errno === 1062) 
+    //       {
+    //         die("email already taken");
+    //       } 
+    //     } 
+    //     else 
+    //     {
+    //         // Display all errors
+    //         foreach ($errors as $error) 
+    //         {
+    //           echo "<script>alert('$error')</script>";
+    //         }
+    //     }
     }
-}
-
-mysqli_close($conn);
+  }
 ?>
-
 <div id="container">
   <form action="signup.php" method="POST" style="border: 2px solid #ccc">
       <div class="every-thing">

@@ -91,7 +91,9 @@ session_start();
       }
       else
       {
+        
         echo "<script>alert('Password is incorrect')</script>";
+        echo "the acual password: $password, the hashed password: {$user['password']}";
       }
       }
     else
@@ -100,21 +102,20 @@ session_start();
     }
   
 
-  if (isset($_POST['logout']) && $_POST['logout'] == 'success') 
+
+ }
+ if (isset($_POST['logout']) && $_POST['logout'] == 'success') 
   {
       echo '<script>alert("You have logged out successfully.");</script>';
   }
- }
 ?>
 
 <div id="container">
-<form method="post" action="login.php" style="border: 2px solid #ccc">
+<form method="POST" action="login.php" style="border: 2px solid #ccc">
     <div class="every-thing">
       <h1>Login</h1>
       <hr>
       <input type="text" placeholder="Enter your ID" name="id" class= "inputt" maxlength="9">
-
-
       <input type="password" placeholder="Enter Password" name="password" class= "inputt" maxlength="50">
 
       <div class="clearfix">
@@ -126,6 +127,7 @@ session_start();
 
   </form>
   </div>
-</body>
 
+
+</body>
 </html>

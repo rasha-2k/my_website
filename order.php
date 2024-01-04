@@ -31,13 +31,16 @@
         <h1>Users Data</h1>
 
         <form action="" method="POST">
-            <label for="order">Select Order:</label>
-            <select name="order" id="order">
-                <option value="ID">ID</option>
-                <option value="full_name">Full Name</option>
-                <option value="birthdate">Birthdate</option>
-                <option value="major">Major</option>
-            </select>
+            <label for="order">
+                <h4><b>Select Order:<b>
+                    <select name="order" id="order">
+                        <option value="ID">ID</option>
+                        <option value="full_name">Full Name</option>
+                        <option value="birthdate">Birthdate</option>
+                        <option value="major">Major</option>
+                    </select>
+                </h4>
+            </label>
             <input type="submit" name="submit" value="Submit">
         </form>
     </div>

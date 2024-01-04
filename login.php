@@ -75,7 +75,7 @@ session_start();
   include "database_conn.php";
 
   if (isset($_POST["submit"])) 
-  {
+  {         
     $id = $_POST["id"];
     $password =  $_POST["password"];
     $sql = "SELECT * FROM users WHERE ID = '$id'";
@@ -85,7 +85,6 @@ session_start();
     {
       if (password_verify($password, $user["password"])) 
       {
-        session_start();
         $_SESSION["user"] = "yes";
         header("Location: home.php");
         die();
@@ -94,14 +93,15 @@ session_start();
       {
         echo "<script>alert('Password is incorrect')</script>";
       }
-    }
+      }
     else
     {
       echo "<script>alert('ID does not exist')</script>";
     }
   
 
-  if (isset($_GET['logout']) && $_GET['logout'] == 'success') {
+  if (isset($_POST['logout']) && $_POST['logout'] == 'success') 
+  {
       echo '<script>alert("You have logged out successfully.");</script>';
   }
  }
@@ -112,10 +112,10 @@ session_start();
     <div class="every-thing">
       <h1>Login</h1>
       <hr>
-      <input type="text" placeholder="Enter your ID" name="id" class= "inputt">
+      <input type="text" placeholder="Enter your ID" name="id" class= "inputt" maxlength="9">
 
 
-      <input type="password" placeholder="Enter Password" name="psw" class= "inputt">
+      <input type="password" placeholder="Enter Password" name="password" class= "inputt" maxlength="50">
 
       <div class="clearfix">
         <input type="submit" id="loginbtn" class="button" name="submit" value="Log in">

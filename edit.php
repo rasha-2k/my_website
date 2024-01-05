@@ -2,41 +2,6 @@
 session_start();
 include 'database_conn.php';
 
-// Check if the user is logged in
-// if (!isset($_SESSION['user'])) {
-//     header("Location: login.php");
-//     die();
-// }
-
-// Retrieve user information from the database based on user ID
-$user_id = $_SESSION['id'];
-$sql = "SELECT * FROM users WHERE ID = '$user_id'";
-$result = mysqli_query($conn, $sql);
-$user = mysqli_fetch_assoc($result);
-
-// Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST') 
-{
-    // Retrieve updated information from the form
-    $new_id = mysqli_real_escape_string($conn, $_POST['new_id']);
-    $new_full_name = mysqli_real_escape_string($conn, $_POST['new_full_name']);
-    $new_birthdate = mysqli_real_escape_string($conn, $_POST['new_birthdate']);
-    $new_major = mysqli_real_escape_string($conn, $_POST['new_major']);
-    $new_email = mysqli_real_escape_string($conn, $_POST['new_email']);
-    $new_password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-
-    // Update the database with the new information
-    $update_sql = "UPDATE users SET ID = '$new_id', full_name = '$new_full_name', birthdate = '$new_birthdate', major = '$new_major', email = '$new_email', password = '$new_password' WHERE ID = '$user_id'";
-    
-    if (mysqli_query($conn, $update_sql)) {
-        // Redirect to a confirmation page or the home page
-        header("Location: edit_confirmation.php");
-        die();
-    } else {
-        // Update failed
-        echo "Error: " . mysqli_error($conn);
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -75,5 +40,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     </form>
 
     <p><a href="home.php">Back to Home</a></p>
+    <?php
+    
+// Check if the user is logged in
+// if (!isset($_SESSION['user'])) {
+//     header("Location: login.php");
+//     die();
+// }
+
+// Retrieve user information from the database based on user ID
+$user_id = $_SESSION['id'];
+$sql = "SELECT * FROM users WHERE ID = '$user_id'";
+$result = mysqli_query($conn, $sql);
+$user = mysqli_fetch_assoc($result);
+
+// Check if the form is submitted
+if ($_SERVER['REQUEST_METHOD'] === 'POST') 
+{
+    // Retrieve updated information from the form
+    $new_id = mysqli_real_escape_string($conn, $_POST['new_id']);
+    $new_full_name = mysqli_real_escape_string($conn, $_POST['new_full_name']);
+    $new_birthdate = mysqli_real_escape_string($conn, $_POST['new_birthdate']);
+    $new_major = mysqli_real_escape_string($conn, $_POST['new_major']);
+    $new_email = mysqli_real_escape_string($conn, $_POST['new_email']);
+    $new_password = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
+
+    // Update the database with the new information
+    $update_sql = "UPDATE users SET ID = '$new_id', full_name = '$new_full_name', birthdate = '$new_birthdate', major = '$new_major', email = '$new_email', password = '$new_password' WHERE ID = '$user_id'";
+    
+    if (mysqli_query($conn, $update_sql)) 
+    {
+        // Redirect to a confirmation page or the home page
+        header("Location: edit.php");
+        die();
+    } else {
+        // Update failed
+        echo "Error: " . mysqli_error($conn);
+    }
+}
+    
+    ?>
 </body>
 </html>

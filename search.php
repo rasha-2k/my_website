@@ -46,9 +46,6 @@
             </h4>
         </label>
     </form>
-
-    
-
     <?php
         // If the form has been submitted with a supplied field and value
         if (isset($_POST['field']) && isset($_POST['value'])) {
@@ -65,9 +62,11 @@
             $result = mysqli_query($conn, $query);
 
             // If records found, display in a table
-            if (mysqli_num_rows($result) == 0) {
+            if (mysqli_num_rows($result) == 0) 
+            {
                 echo "No results found.";
-            } else {
+            } else 
+            {
                 echo "<table>";
                 echo "<tr><th>ID</th> <th>Full Name</th> <th>Birthdate</th><th>Major</th><th>Email</th></tr>";
 

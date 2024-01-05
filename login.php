@@ -1,6 +1,6 @@
 <?php
-session_start();
-?>
+  require_once "session.php";
+  ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -69,15 +69,15 @@ session_start();
 
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
     <?php 
-    include 'header.php'
+    include 'header.php';
     ?>
-<?php
+  <?php
   include "database_conn.php";
 
-  if (isset($_POST["submit"])) 
+  if ($_SERVER["REQUEST_METHOD"] == "POST" && isset( $_POST["submit"])) 
   {         
     $id = $_POST["id"];
-    $password =  $_POST["password"];
+    $password = $_POST["password"];
     $sql = "SELECT * FROM users WHERE ID = '$id'";
     $result = mysqli_query($conn, $sql);
     $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
@@ -85,9 +85,10 @@ session_start();
     {
       if (password_verify($password, $user["password"])) 
       {
-        $_SESSION["user"] = "yes";
+        $_SESSION["userid"] = $user['id'];
+        $_SESSION["user"] = $user;
         header("Location: home.php");
-        die();
+        exit;
       }
       else
       {
@@ -95,14 +96,11 @@ session_start();
         echo "<script>alert('Password is incorrect')</script>";
         echo "the acual password: $password, the hashed password: {$user['password']}";
       }
-      }
+    }
     else
     {
       echo "<script>alert('ID does not exist')</script>";
     }
-  
-
-
  }
  if (isset($_POST['logout']) && $_POST['logout'] == 'success') 
   {

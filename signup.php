@@ -81,8 +81,8 @@
 <body>
   <?php 
     include 'header.php';
-    session_start();
     include "database_conn.php";
+    require_once "session.php";
 
     //to sure that the user press submit button
     if (isset($_POST["submit"])) 
@@ -95,7 +95,7 @@
       $email = $_POST['email'];
       $password = $_POST['psw'];
       $psw_repeat = $_POST['psw_repeat'];
-      $password_hash = password_hash($password, PASSWORD_DEFAULT);
+      $password_hash = password_hash($password, PASSWORD_BCRYPT);
       $errors = array();
 
       //! to insure that the user input every field

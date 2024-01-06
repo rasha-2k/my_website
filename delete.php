@@ -1,3 +1,7 @@
+<?php
+    include 'header.php';
+    include 'database_conn.php';
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,31 +52,32 @@
     }
     </style>
     <?php 
-    include 'header.php';
-    
-    // Include your database connection file
-    include 'database_conn.php';
-    
+
     // Handle form submission
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") 
+    {
         $IDToDelete = $_POST['id'];
         
         // Perform the deletion in the database
         $sql = "DELETE FROM users WHERE ID = ?";
         $stmt = mysqli_prepare($conn, $sql);
         
-        if ($stmt) {
+        if ($stmt) 
+        {
             mysqli_stmt_bind_param($stmt, "s", $IDToDelete);
             mysqli_stmt_execute($stmt);
             
             if (mysqli_stmt_affected_rows($stmt) > 0) {
                 echo "<script>alert('User has been deleted successfully.')</script>";
-            } else {
+            } 
+            else 
+            {
                 echo "<script>alert('User not found.')</script>";
             }
-            
             mysqli_stmt_close($stmt);
-        } else {
+        } 
+        else 
+        {
             echo "Error in preparing the delete statement.";
         }
     }

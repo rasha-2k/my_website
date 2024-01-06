@@ -4,6 +4,6 @@ $_SESSION = array();
 
 session_destroy();
 
-header("Location: login.php?logout=success");
+header("Location: home.php?logout=success");
 exit();
 ?>

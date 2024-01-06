@@ -11,7 +11,7 @@
     include 'header.php';  // Assuming you have a header.php file with the navigation header
         session_start();
         // Check if the user is logged in
-        if (isset($_SESSION['user']) && isset($_SESSION['fullname'])) 
+        if (isset($_SESSION['userid']) && isset($_SESSION['fullname'])) 
         {
             // Get the user's full name from the session
             $fullname = $_SESSION['fullname'];
@@ -29,7 +29,6 @@
             // Redirect the user to the login page if not logged in
             echo "<script>alert('Please log in first to go to the main page')</script>";
             header("Location: login.php");
-            exit();
         }
     ?>
 </body>

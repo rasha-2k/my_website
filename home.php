@@ -18,15 +18,11 @@ session_start();
     <?php
     if(isset($_SESSION['valid'])) 
     {			
-        include("connection.php");					
-        $result = mysqli_query($mysqli, "SELECT * FROM login");
-        echo "Welcome".$_SESSION['name']." !";
+        include("database_conn.php");					
+        $result = mysqli_query($conn, "SELECT * FROM users");
+        echo "<h1>Welcome ".$_SESSION['full_name']." !</h1>";
     } 
-    else 
-    {
-        echo "<script>alert('You must be logged in to view this page.')</script>";
-        header("Location: login.php");
-    }
+
     ?>
 
 </body>

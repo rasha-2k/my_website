@@ -1,3 +1,18 @@
+<?php    
+    // Include session and database connection files
+    session_start();
+    include_once "database_conn.php";
+    include 'header.php';
+    // Check if the user is not logged in, store the current URL and redirect to login page
+    if (!isset($_SESSION['valid'])) 
+    {
+        // Store the current page URL in a session variable
+        $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
+        echo "<script>alert('You must login first to view the data!'); window.location.href = 'login.php';</script>";
+        exit;
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,10 +38,7 @@
     </style>
 </head>
 <body>
-    <?php
-    include 'header.php';
-    ?>
-    <form action="search.php" method="POST">
+    <form action="" method="POST">
         <label>
             <h4><b>Choose a field that you want to search:</b>
                 <select id="field" name="field">
@@ -47,39 +59,48 @@
         </label>
     </form>
     <?php
-        // If the form has been submitted with a supplied field and value
-        if (isset($_POST['field']) && isset($_POST['value'])) {
-            include "database_conn.php";
-            
-            // Sanitize user input
-            $field = mysqli_real_escape_string($conn, $_POST['field']);
-            $value = mysqli_real_escape_string($conn, $_POST['value']);
+    // If the form has been submitted with a supplied field and value
+    if (isset($_POST['field']) && isset($_POST['value'])) {
+        // Sanitize user input
+        $field = mysqli_real_escape_string($conn, $_POST['field']);
+        $value = mysqli_real_escape_string($conn, $_POST['value']);
 
-            // Create the query
-            $query = "SELECT * FROM users WHERE $field LIKE '$value%'";
-            
-            // Execute the query
-            $result = mysqli_query($conn, $query);
+        // Create the query
+        $query = "SELECT * FROM users WHERE $field LIKE '$value%'";
 
-            // If records found, display in a table
-            if (mysqli_num_rows($result) == 0) 
+        // Execute the query
+        $result = mysqli_query($conn, $query);
+
+        // If records found, display in a table
+        if (mysqli_num_rows($result) == 0) 
+        {
+            echo "No results found.";
+        } 
+        else 
+        {
+            echo "<table>
+                    <tr>
+                        <th>ID</th> 
+                        <th>Full Name</th> 
+                        <th>Birthdate</th>
+                        <th>Major</th>
+                        <th>Email</th>
+                    </tr>";
+
+            while ($row = mysqli_fetch_assoc($result)) 
             {
-                echo "No results found.";
-            } else 
-            {
-                echo "<table>";
-                echo "<tr><th>ID</th> <th>Full Name</th> <th>Birthdate</th><th>Major</th><th>Email</th></tr>";
-
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<tr><td>" . $row['ID'] . "</td><td>" . $row['full_name'] . "</td><td>" . $row['birthdate'] . "</td><td>" . $row['major'] . "</td><td>" . $row['email'] . "</td></tr>";
-                }
-
-                echo "</table>";
+                echo "<tr><td>" . $row['ID'] . "</td>"
+                        ."<td>" . $row['full_name'] . "</td>"
+                        ."<td>" . $row['birthdate'] . "</td>"
+                        ."<td>" . $row['major'] . "</td>"
+                        ."<td>" . $row['email'] . "</td></tr>";
             }
-
-            // Close the connection
-            mysqli_close($conn);
+            echo "</table>";
         }
-   ?>
+    }
+
+    // Close the connection
+    mysqli_close($conn);
+    ?>
 </body>
 </html>

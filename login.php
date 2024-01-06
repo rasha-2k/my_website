@@ -1,6 +1,9 @@
 <?php
-  require_once "session.php";
-  ?>
+  session_start();
+  include "database_conn.php";
+  include 'header.php';
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -68,16 +71,14 @@
 </head>
 
 <body class="p-3 m-0 border-0 bd-example m-0 border-0">
-    <?php 
-    include 'header.php';
-    ?>
+
   <?php
-  include "database_conn.php";
+
 
   if ($_SERVER["REQUEST_METHOD"] == "POST" && isset( $_POST["submit"])) 
   {         
-    $id = $_POST["id"];
-    $password = $_POST["password"];
+    $id = trim($_POST["id"]);
+    $password = trim($_POST["password"]);
     $sql = "SELECT * FROM users WHERE ID = '$id'";
     $result = mysqli_query($conn, $sql);
     $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
@@ -85,17 +86,31 @@
     {
       if (password_verify($password, $user["password"])) 
       {
-        $_SESSION["userid"] = $user['id'];
-        $_SESSION["user"] = $user;
-        header("Location: home.php");
-        exit;
+        $_SESSION['full_name']= $user['full_name'];
+        $_SESSION['id'] = $user['id'];
+        $_SESSION['user'] = $user;
+        $_SESSION['valid']="yes";
+        $_SESSION['major']= $user['major'];
+        $_SESSION['birthdate']= $user['birthdate'];
+        $_SESSION['email']= $user['email'];
+
+        if (isset($_SESSION['redirect_url'])) 
+        {
+          $redirect_url = $_SESSION['redirect_url'];
+          unset($_SESSION['redirect_url']); // Clear the stored URL
+          header("Location: $redirect_url");
+        } 
+        else 
+        {
+          header('Location: home.php'); // Redirect to the home page or any other default page
+        }
       }
       else
       {
-        
         echo "<script>alert('Password is incorrect')</script>";
         echo "the acual password: $password, the hashed password: {$user['password']}";
       }
+      exit;
     }
     else
     {
@@ -121,7 +136,6 @@
         <input type="reset" id="canclebtn" class="button" name="clear" value="Cancle">
       </div>
     </div>
-    <p>Don't have an account? <a href="signup.php" id="signup"><b> Register here</b></a></p>
 
   </form>
   </div>

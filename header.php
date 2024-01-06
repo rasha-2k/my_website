@@ -26,7 +26,18 @@ $current_page = basename($_SERVER['PHP_SELF']);
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="main_page.php">My website</a>
+      <?php
+        // Check if the user is logged in
+        if (isset($_SESSION['valid'])) {
+          // Display the user's full name as the website name
+          echo '<a class="navbar-brand" href="home.php">' . $_SESSION['full_name'] . '</a>';
+        } 
+        else 
+        {
+          // Display "Account" as the website name if the user is not logged in
+          echo '<a class="navbar-brand" href="login.php">Account</a>';
+        }
+      ?>
     </div>
     <ul class="nav navbar-nav">
       <li <?php if ($current_page == 'home.php') echo 'class="active"'; ?>><a href="home.php">Home</a></li>
@@ -42,8 +53,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="signup.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+    <li><a href="signup.php"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
       <li><a href="login.php"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+
     </ul>
   </div>
 </nav>

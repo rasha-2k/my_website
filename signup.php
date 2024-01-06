@@ -80,22 +80,22 @@
 </head>
 <body>
   <?php 
+    session_start();
     include 'header.php';
     include "database_conn.php";
-    require_once "session.php";
 
     //to sure that the user press submit button
     if (isset($_POST["submit"])) 
     {
       // store into the variables the user input
       $id = $_POST['id']; //! the key of the array is the "name" of the input
-      $fullname = $_POST['fullname'];
+      $fullname = $_POST['full_name'];
       $birthdate = $_POST['birthdate'];
       $major = $_POST['major'];
       $email = $_POST['email'];
       $password = $_POST['psw'];
       $psw_repeat = $_POST['psw_repeat'];
-      $password_hash = password_hash($password, PASSWORD_BCRYPT);
+      $password_hash = password_hash($password, PASSWORD_DEFAULT);
       $errors = array();
 
       //! to insure that the user input every field
@@ -146,7 +146,22 @@
               mysqli_stmt_bind_param($stmt, "ssssss", $id, $fullname, $birthdate, $major, $email, $password_hash);
               if (mysqli_stmt_execute($stmt)) //! a function that sure that the sql can be executed
               {
+                $_SESSION['full_name'] = $fullname;
+                $_SESSION['id'] = $id;
+                $_SESSION['user'] = [
+                    'ID' => $id,
+                    'full_name' => $fullname,
+                    'birthdate' => $birthdate,
+                    'major' => $major,
+                    'email' => $email,
+                    'password' => $password_hash,
+                ];
+                $_SESSION['valid'] = "yes";
                 echo "<script>alert('You are registered successfully.')</script>";
+
+                // Redirect to home if registration is successful
+                header("Location: home.php");
+                exit;
               }
               else 
               {
@@ -173,10 +188,10 @@
       <input type="text" placeholder="Enter your ID" name="id" class= "inputt" maxlength="9" ></label>
       <br>
       <label>
-      <input type="text" placeholder="Enter your Full name" name="fullname" class= "inputt" maxlength="50"></label>
+      <input type="text" placeholder="Enter your Full name" name="full_name" class= "inputt" maxlength="50"></label>
       <br>
-      <label>
-      <input type="date" placeholder="Enter your Birth Date" name="birthdate" class= "inputt"></label>
+      <label>Enter your Birth date
+      <input type="date" name="birthdate" class= "inputt"></label>
       <br>
       <label>
       <input type="text" placeholder="Enter your Major" name="major" class= "inputt" maxlength="30"></label>
@@ -195,7 +210,6 @@
         <input type="submit" name="submit" id="signupbtn" class="button" value = "Sign Up">
         <input type="reset" name="reset" id="canclebtn" class="button" value = "Cancle">
           <br><br>
-        <p>Have an account? <a href="login.php" id="login"><b>Log in</b></a></p>
         </div>
       </div>
     </div>

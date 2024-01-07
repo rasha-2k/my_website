@@ -62,8 +62,8 @@
     // If the form has been submitted with a supplied field and value
     if (isset($_POST['field']) && isset($_POST['value'])) {
         // Sanitize user input
-        $field = mysqli_real_escape_string($conn, $_POST['field']);
-        $value = mysqli_real_escape_string($conn, $_POST['value']);
+        $field = $_POST['field'];
+        $value =$_POST['value'];
 
         // Create the query
         $query = "SELECT * FROM users WHERE $field LIKE '$value%'";

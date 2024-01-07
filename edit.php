@@ -1,5 +1,4 @@
 <?php
-// Include the session, database connection files, and header
 session_start();
 include_once "database_conn.php";
 include 'header.php';
@@ -14,64 +13,64 @@ if (!isset($_SESSION['valid']))
 }
 
 // Initialize variables
-$edit_user_id = $edit_user_password = $new_fullname = $new_birthdate = $new_major = $new_email = "";
+$new_fullname = $new_birthdate = $new_major = $new_email = "";
 
 // Check if the form is submitted for editing
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-    // Get the user ID and password from the form if they are set
-    $edit_user_id = isset($_POST["edit_user_id"]) ? mysqli_real_escape_string($conn, $_POST["edit_user_id"]) : '';
-    $edit_user_password = isset($_POST["edit_user_password"]) ? mysqli_real_escape_string($conn, $_POST["edit_user_password"]) : '';
-
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) 
+{
     // Validate the password (you may want to improve this validation)
-    if (empty($edit_user_password)) {
-        echo "<script>alert('Please enter a password to edit the user.')</script>";
-    } else {
-        // Fetch user details based on the provided ID and password
-        $query = "SELECT * FROM users WHERE ID = '$edit_user_id'";
-        $result = mysqli_query($conn, $query);
+    $entered_password = trim($_POST["password"]);
 
-        if (!$result) {
-            echo "Error: " . mysqli_error($conn);
-            exit;
+    // Fetch user details based on the currently logged-in user
+    $query = "SELECT * FROM users WHERE ID = '{$_SESSION['id']}'";
+    $result = mysqli_query($conn, $query);
+
+    if (!$result)
+    {
+        echo "Error: " . mysqli_error($conn);
+        exit;
+    }
+
+    $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
+    if(password_verify($entered_password, $user['password']))
+    {
+        // Process form submission for updating user details
+        $new_fullname = trim($_POST["new_fullname"]) ;
+        $new_birthdate = trim($_POST["new_birthdate"]) ;
+        $new_major = trim($_POST["new_major"]) ;
+        $new_email = trim($_POST["new_email"]) ;
+        
+        // Update user details
+        $update_query = "UPDATE users 
+                        SET full_name='$new_fullname', 
+                            birthdate='$new_birthdate', 
+                            major='$new_major', 
+                            email='$new_email' 
+                        WHERE ID='{$_SESSION['id']}'";
+       
+        $update_result = mysqli_query($conn, $update_query);
+        if (!$update_result) 
+        {
+            echo "<script>alert('Error updating user details: " . mysqli_error($conn) . "')</script>";
+        } else 
+        {
+            // Update session variables with new details
+            $_SESSION['full_name'] = $new_fullname;
+            $_SESSION['birthdate'] = $new_birthdate;
+            $_SESSION['major'] = $new_major;
+            $_SESSION['email'] = $new_email;
+            echo "<script>alert('User details updated successfully!'); window.location.href = 'home.php';</script>";
         }
-
-        $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-        // Check if the user is found
-        if ($user && password_verify($edit_user_password, $user['password'])) {
-            // Process form submission for updating user details
-            $new_fullname = isset($_POST["new_fullname"]) ? mysqli_real_escape_string($conn, $_POST["new_fullname"]) : '';
-            $new_birthdate = isset($_POST["new_birthdate"]) ? mysqli_real_escape_string($conn, $_POST["new_birthdate"]) : '';
-            $new_major = isset($_POST["new_major"]) ? mysqli_real_escape_string($conn, $_POST["new_major"]) : '';
-            $new_email = isset($_POST["new_email"]) ? mysqli_real_escape_string($conn, $_POST["new_email"]) : '';
-
-            // Update user details
-            $update_query = "UPDATE users 
-                             SET full_name='$new_fullname', 
-                                 birthdate='$new_birthdate', 
-                                 major='$new_major', 
-                                 email='$new_email' 
-                             WHERE ID='$edit_user_id'";
-            $update_result = mysqli_query($conn, $update_query);
-
-            if (!$update_result) {
-                echo "<script>alert('Error updating user details: " . mysqli_error($conn) . "')</script>";
-            } else {
-                // Update session variables with new details
-                $_SESSION['full_name'] = $new_fullname;
-                $_SESSION['birthdate'] = $new_birthdate;
-                $_SESSION['major'] = $new_major;
-                $_SESSION['email'] = $new_email;
-                echo "<script>alert('User details updated successfully!'); window.location.href = 'home.php';</script>";
-            }
-        } else {
-            echo "<script>alert('Invalid ID or password.')</script>";
-        }
+    }
+    else 
+    {
+        echo "<script>alert('Incorrect password!')</script>";
     }
 }
 
 mysqli_close($conn);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -191,14 +190,9 @@ mysqli_close($conn);
             <div class="every-thing">
                 <h1>Edit Profile</h1>
                 <hr>
+
                 <label>
-                    Enter User ID that you want to edit: <br>
-                    <input type="text" name="edit_user_id" id="idd" maxlength="9" required>
-                </label>
-                <br>
-                <label>
-                    Enter User Password: <br>
-                    <input type="password" name="edit_user_password" class="inputt" maxlength="255" required>
+                    <input type="password" placeholder="Enter your Password" name="password" class="inputt" maxlength="255" required>
                 </label>
                 <hr>
                 <label>

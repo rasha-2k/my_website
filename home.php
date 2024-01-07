@@ -14,15 +14,11 @@ session_start();
     <?php 
     include 'header.php';
     include 'database_conn.php';
-    ?>
-    <?php
     if(isset($_SESSION['valid'])) 
     {			
-        include("database_conn.php");					
         $result = mysqli_query($conn, "SELECT * FROM users");
         echo "<h1>Welcome ".$_SESSION['full_name']." !</h1>";
     } 
-
     ?>
 
 </body>

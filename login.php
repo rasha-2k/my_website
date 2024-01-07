@@ -84,16 +84,16 @@
     $user = mysqli_fetch_array($result, MYSQLI_ASSOC);
     if ($user) 
     {
-      if (password_verify($password, $user["password"])) 
+      if (password_verify($password, $user['password'])) 
       {
         $_SESSION['full_name']= $user['full_name'];
-        $_SESSION['id'] = $user['id'];
+        $_SESSION['id'] = $user['ID'];
         $_SESSION['user'] = $user;
         $_SESSION['valid']="yes";
         $_SESSION['major']= $user['major'];
         $_SESSION['birthdate']= $user['birthdate'];
         $_SESSION['email']= $user['email'];
-
+        $_SESSION['password']= $user['password'];
         if (isset($_SESSION['redirect_url'])) 
         {
           $redirect_url = $_SESSION['redirect_url'];
@@ -108,9 +108,7 @@
       else
       {
         echo "<script>alert('Password is incorrect')</script>";
-        echo "the acual password: $password, the hashed password: {$user['password']}";
       }
-      exit;
     }
     else
     {

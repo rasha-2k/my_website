@@ -66,7 +66,7 @@
         $value =$_POST['value'];
 
         // Create the query
-        $query = "SELECT * FROM users WHERE $field LIKE '$value%'";
+        $query = "SELECT * FROM users WHERE $field LIKE '%$value%'";
 
         // Execute the query
         $result = mysqli_query($conn, $query);

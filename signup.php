@@ -85,7 +85,7 @@
     include "database_conn.php";
 
     //to sure that the user press submit button
-    if (isset($_POST["submit"])) 
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) 
     {
       // store into the variables the user input
       $id = $_POST['id']; //! the key of the array is the "name" of the input
@@ -97,7 +97,10 @@
       $psw_repeat = $_POST['psw_repeat'];
       $password_hash = password_hash($password, PASSWORD_DEFAULT);
       $errors = array();
-
+      $_SESSION['birthdate'] = $birthdate;
+      $_SESSION['major'] = $major;
+      $_SESSION['email'] = $email;
+      
       //! to insure that the user input every field
       if (empty($fullname) || empty($id) || empty($major) || empty($email) || empty($password) || empty($psw_repeat)) 
       {

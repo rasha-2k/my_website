@@ -3,7 +3,7 @@ $hostName = "localhost";
 $dbUser = "root"; 
 $dbpassword = "";
 $dbName = "login_signup";
-$conn = mysqli_connect($hostName, $dbUser, $dbpassword, $dbName);
+$conn = mysqli_connect($hostName, $dbUser, $dbpassword);
 if (!$conn) 
 {
     die("something went wrong". mysqli_connect_error());
@@ -14,6 +14,12 @@ $sql = "CREATE DATABASE IF NOT EXISTS $dbName";
 if (!mysqli_query($conn, $sql)) 
     echo "<script>alert('Error creating database:');</script> " . mysqli_error($conn);
 
+mysqli_close($conn);
+$conn = mysqli_connect($hostName, $dbUser, $dbpassword, $dbName);
+if (!$conn) 
+{
+    die("something went wrong". mysqli_connect_error());
+}
 // Select the database
 mysqli_select_db($conn, $dbName);
 
